@@ -1,0 +1,33 @@
+LIST OF VARIABLES 
+###################################################################
+#   Lists variables defined by Ashley in eco_dynmass.py or	  #	
+#   from the group finder, fof9.c, or from HAM massmatch3c	  #
+#   	     	   	   	      	       			  #
+#   Some variables are per galaxy arrays, some are per group	  #
+#   For all of Amanda's variables, please see her ECO readme file #
+###################################################################
+
+
+galr			projected distance of galaxy from center of group
+galv			line of sight velocity of galaxy minus the mean velocity of its group    
+gal_dmass		per galaxy array of dynamical masses for ECO groups in solar mass
+gal_vel			per galaxy array of group velocity dispersions
+gal_rad			per galaxy array of group average radius
+num			number of galaxies in a group. same as ind[i+1]-ind[i]
+id			group ID from FOF code
+mr			absolute r band magnitude
+of			index in original input file
+ra			RA
+dec			DEC
+cz			cz in km/s
+ind			indices marking the start of a new group in a per galaxy array. 
+			Ex- group = gal_file[ind[i]:ind[i+1]]. gal_file must be ordered by group id
+avg_cz			average cz of group. could also be changed to median
+avg_ra			average RA of group
+avg_dec			average DEC of group
+hamass			halo abundance matching masses, per group array
+gal_hamass		HAM masses, per galaxy array
+hamr200			HAM R200, per group array
+gal_hamr200		HAM R200, per galaxy array
+r200			R200 calculated from dynamical masses
+rvir			1.27 times gal_rad, calculated from the shift between dyn masses & halo masses

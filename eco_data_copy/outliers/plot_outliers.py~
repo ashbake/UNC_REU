@@ -1,0 +1,112 @@
+#!/usr/bin/python
+#execfile('plot_outliers.py')
+
+path = '/srv/two/ashbake/REU/eco_data/'
+import numpy as np
+from pylab import *
+import math
+from matplotlib import rc, rcParams
+import matplotlib.pyplot as plt
+from numpy import *
+import random
+
+
+
+Ho = 100. #units of h
+execfile(path+'eco_wrapper.py')
+
+#select galaxies incorrectly grouped
+bad = np.where(gal_dmass - mass_grp > 1)
+
+plot(gal_dmass,mass_grp,'k.',label=bz + '_' + bp,markeredgecolor='b',markerfacecolor='b')
+plot(gal_dmass[bad],mass_grp[bad],'r.',label=bz + '_' + bp,markeredgecolor='r',markerfacecolor='r')
+savefig('plotbad_masses.png')
+
+
+############## RA/DEC PLOTS ##############
+clf()
+for i in range(0,len(ind)-1):
+    n=ind[i+1] - ind[i]
+    if n > 40:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        # SIZE based on MSTARS
+        sizes = 20*(5**((sn['goodmstarsnew'][ind[i]:ind[i+1]]-min(sn['goodmstarsnew'][ind[i]:ind[i+1]]))/(max(sn['goodmstars'][ind[i]:ind[i+1]] - min(sn['goodmstars'][ind[i]:ind[i+1]])))))
+        # COLOR based on R BAND MAGNITUDE
+        colors = (mr[ind[i]:ind[i+1]]-max(mr[ind[i]:ind[i+1]]))/(min(mr[ind[i]:ind[i+1]])-max(mr[ind[i]:ind[i+1]]))
+        # GAS MASS or STELLAR MASS dominates?
+        gasmass = sn['goodmstarsnew'][ind[i]:ind[i+1]]/log10(sn['goodmhi'][ind[i]:ind[i+1]])
+        gas = np.where(gasmass < 1)
+        star = np.where(gasmass > 1)
+
+        cm = plt.cm.get_cmap('winter')
+
+        plt.scatter(ra[ind[i]:ind[i+1]],dec[ind[i]:ind[i+1]],c=colors,cmap=cm,s=sizes,edgecolor='none')
+        cm = plt.cm.get_cmap('winter')
+        plt.scatter(ra[ind[i]:ind[i+1]][gas],dec[ind[i]:ind[i+1]][gas],marker='o',s=sizes[gas]+35,edgecolor='k',facecolors='none')
+        
+        
+        # MARK BAD galaxies NOT in AM group
+        bad = np.where(gal_dmass[ind[i]:ind[i+1]] - mass_grp[ind[i]:ind[i+1]] > 1)
+        scatter(ra[ind[i]:ind[i+1]][bad],dec[ind[i]:ind[i+1]][bad],marker='x',c='k',lw=1.2,s=sizes[bad])
+        
+        # LABEL plot w/ mass and stuff
+        text(0.2,0.9,'log Halo Mass = ' + str(round(gal_dmass[ind[i]],2)),ha='center', va='center',transform=ax.transAxes,fontsize=12)
+        text(0.2,0.85,'HEYY sk ku =',ha='center', va='center',transform=ax.transAxes,fontsize=12)
+        
+
+        xlabel('Right Ascension')
+        ylabel('Declination')
+        plt.savefig('radec_' +str(i) + '.png')
+        clf()
+
+xlabel('RA')
+ylabel('DEC')
+plt.savefig('plotbad_radec.png')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############# plot by ra & cz ##################
+
+clf()
+for i in range(0,len(ind)-1):
+    n=ind[i+1] - ind[i]
+    if n > 15:
+        plot(ra[ind[i]:ind[i+1]],cz[ind[i]:ind[i+1]],'k.')
+        bad = np.where(gal_dmass[ind[i]:ind[i+1]] - mass_grp[ind[i]:ind[i+1]] > 1)
+        plot(ra[ind[i]:ind[i+1]][bad],cz[ind[i]:ind[i+1]][bad],'r*')
+        plt.savefig('racz_' +str(i) + '.png')
+        clf()
+
+xlabel('RA')
+ylabel('CZ')
+plt.savefig('plotbad_racz.png')
+
+############### plot by dec & cz ##############
+clf()
+for i in range(0,len(ind)-1):
+    n=ind[i+1] - ind[i]
+    if n > 5:
+        plot(dec[ind[i]:ind[i+1]],cz[ind[i]:ind[i+1]],'k.')
+        bad = np.where(gal_dmass[ind[i]:ind[i+1]] - mass_grp[ind[i]:ind[i+1]] > 1)
+        plot(dec[ind[i]:ind[i+1]][bad],cz[ind[i]:ind[i+1]][bad],'r.')
+
+xlabel('DEC')
+ylabel('CZ')
+plt.savefig('plotbad_deccz.png')
+
+
+############# now pick if way far outside standard deviation ##########
+

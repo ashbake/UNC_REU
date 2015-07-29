@@ -1,0 +1,63 @@
+Explanation of programs in /srv/two/ashbake/REU/eco_data/
+
+#########################   eco_check_gaus.py   ###################
+inputs: runs eco_wrapper.py first
+
+outputs: figures/plotgaus.png
+
+Calculates the skewness and kurtosis of ECO groups, randomly generated Gaussian velocity distributions, and Mock catalog groups. For some reason the plotting only works when you copy and paste the plotting code into the command line. Never debugged this as we decided using this method wouldn't be great for identifying unvirialized systems. However it still has potential, it would just take awhile to calibrate it...it'd be interesting to plot groups w/ substructure on this plot and see where they fall.
+
+#########################  eco_dynmass.py  #########################
+inputs: noG_BZ_BP_infof_ecospring.txt
+	in_ecospring.txt
+
+outputs: eco_dict.LL.p
+
+Calculates dynamical masses of groups just like for the mock. It records variables made in a pickle file called eco_dict.LL.py. Variables are described in README_variablenames in this directory. Different linking lengths can be chosen up top, however I only have input files for linking lengths of .12 1.3 & .14 .75. the noG.. file is from the group finder and in_ecospring is the input file to the fof9.c code (note last four columns if exist are probably meaningless).
+
+######################### eco_makepickle.py #########################
+
+inputs: eco_dict.bpbz.p
+	out_ecospring_hammass.txt
+	jushr_alfalfa_clean_102113.dat
+
+outputs: eco_dict_all.bpbz.p
+
+Takes in info from all those input files and puts them all in eco_dict_all...p 
+
+######################### eco_rvir.py  #########################
+
+inputs: runs eco_wrapper.py
+
+outputs: figures/plotvir.pdf
+
+Unfinished analysis of r200 and rvir
+
+
+######################### eco_wrapper.py  #########################
+
+inputs: eco_dict_all.bpbz.p
+
+outputs: loads all variables
+
+Setup file to be run before most codes. Commented out option to cut out groups that are outside the volume that I used to reject groups that are outside the limited redshift buffers
+
+
+#########################  plot_ECO.py  #########################
+
+inputs: runs eco_wrapper.py first
+
+outputs: ECOmap.pdf
+
+Plots the onsky distribution of ECO galaxies color coded by their group dynamical mass.
+
+
+#########################  plot_hist.py  #########################
+
+inputs: runs eco_wrapper.py and calc_grps/check_vir.py
+
+outputs: plot_masses_'+bz + '_' + bp+'.pdf
+	 ECOmasshists.pdf
+
+Plots ECO dyn mass vs HAM masses and then a histogram of the two.
+
